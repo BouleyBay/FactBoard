@@ -1,0 +1,113 @@
+html {
+    font-family: "Fira Sans Light", "Helvetica Neue", Arial;
+    font: 12px !important; 
+}
+
+td {
+    padding-top: 0px;
+    padding-right: 5px;
+    padding-top: 0px;
+    padding-left: 5px;
+    font: 12px !important;
+}
+
+.envVersion, .envRowHdr 
+{	margin: 0;
+    padding: 0;
+    z-index: 30;
+    margin-left: 25px;
+    font: 12px !important;
+}
+
+.envVersion .envdropdown, .envRowHdr .envdropdown
+{	display: block;
+    margin: 0 1px 0 0;
+    padding: 4px 10px;
+    width: 60px;
+    /* background: #5970B2; */
+    /* ---- color: #FFF;   ---- */
+    font: 12px;
+    font-family: "Fira Sans Light", "Helvetica Neue", Arial;
+    text-align: center;
+    text-decoration: none !important;
+}
+
+.envdropdownanc {
+    text-decoration: none;
+}
+
+.envVersion a, .envRowHdr  a
+{	margin: 0;
+    padding: 0;
+    list-style: none;
+    color: white;
+    text-decoration: none !important;
+    font: 12px;
+}
+
+.envVersion td:active {
+    border-color: white;
+    /* background-color: blue; */
+    border-style: 1px solid;
+    text-decoration: none !important; 
+}
+
+
+.envVersion td:first-child th:first-child {
+    color: black;
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px;
+	border-top-left-radius:5px;
+    color: black !important;
+}
+
+.envVersion a:active, .envRowHdr a:active
+{   font: 12px;
+    cursor: pointer;
+    /* background-color: blue; */
+    border-style: 1px solid;
+    font-weight: 500;
+}
+
+.envVersion div, .envRowHdr div
+{	position: absolute;
+    visibility: hidden;
+    min-width: 120px;
+    font: 12px !important;
+    margin: 3px 15px 0px 20px; 
+    padding-left: 5px;
+    box-shadow: 5px 5px 3px #333;
+    border: 1px none;
+    border-color: #fff;
+    border-radius: 7px;
+    background-color: #000;
+    background-color: rgba(4,55,20,0.8);
+}
+
+.envRowHdr div
+{
+    /* background-color: #0000FF; */
+    /* background-color: rgba(0,0,255,0.8); */
+}
+
+.envVersion div a, .envRowHdr div a
+    {	position: relative;
+    display: block;
+    margin: 0;
+    padding: 5px 10px;
+    width: auto;
+    white-space: nowrap;
+    text-align: left;
+    text-decoration: none;
+    /* color: #fff; */
+    font: 12px;
+    font-weight: 500;
+    /* background-color: #000; */
+    /* background-color: rgba(55,55,55,0.9); */
+    }
+
+.envVersion div a:hover, .envRowHdr div a:hover
+    {	font-weight: 900; 
+    /* text-decoration: underline; */
+   /* background-color: #000; */
+}
