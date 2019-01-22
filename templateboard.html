@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Infrastructure Pull Requests</title>
+    <link href="simple-little-tab.css" rel="stylesheet">
+    <link href="envversions.css" rel="stylesheet">
+    <meta http-equiv="refresh" content="1200">
+</head>
+
+<body>
+<div style="width:2300px;">
+
+<div class="facts" id="facts" style="float:left; margin-left:15px; margin-right:10px;">
+
+</div>
+
+
+
+<div class="meta" style="float:left;">
+<div style="margin-left:-5px; padding-bottom:7px; border-bottom:1px solid #8c8c8c;"><a href="help.html">Help</a></div>
+<div style="margin-top:7px;"><a href="javascript:" onClick='javascript:void(0)'><img id=plusMinus src="plus.png" alt="+" width="15" height="15" style="margin-left:-5px; margin-bottom:-2px" onclick="toggleConfigDisplay(this)"/></a>&nbsp;Show/hide environment rows</div>
+<div id="selectRows" class="meta" >
+<!-- Checkboxes are added here to hide and display each table row -->
+</div>
+<div id="versionurl" style="padding-top:7px; margin-left:-1px; margin-bottom:7px;"><a id="displayedvalueanchor" href="" onclick="window.open(this.href, 'Healthcheck', 'left=20, top=20, height=800, menubar=no, titlebar=no, toolbar=no, resizable=yes, scrollbars=yes'); return false;"></a></div>
+<div id="urloutput" style="font-size:11px; font-family:monospace; margin-bottom:0px;"></div>
+<div id="urlinfo" style="font-size:11px; font-family:monospace;"></div>
+</div>
+</div>
+
+
+
+<div class="facts" style="clear:both">
+<table class="table" style="font-size:9px;">
+<thead>
+<tr class="envRow" style="display:table-row;">
+<th class="envRowHdr" style="padding:1px 5px 1px 5px;" data-menuItem1="Github source:https://github.com/BouleyBay/FactBoard">TemplateBoard</th>
+
+<th style="padding:1px 5px 1px 5px;">Version:</th>
+
+<td class="envVersion dontHighlight" style="padding:1px 5px 1px 5px;" data-versionUri="factboard_info.txt" data-Xaccesstype="direct" data-versionAttrName="factboard" data-transformValue="substring(1, this.length)"></td>
+
+<th style="display:none; padding:1px 5px 1px 5px;">Last updated:</th>
+
+<td class="envVersion dontHighlight" id="lastUpdate" style="display:none; padding:1px 5px 1px 5px;" data-versionUri="prfactboard_last_updated.txt" data-accesstype="direct" data-versionAttrName="Last updated:" data-redif="moreWorkDaysThan(1, 'MM/DD/YYYY HH:mm:ss')"></td>
+
+<th style="padding:1px 5px 1px 5px;">Last rebuilt:</th>
+
+<td class="envVersion dontHighlight" id="lastBuild" style="padding:1px 5px 1px 5px;" data-versionUri="prfactboard_last_built.txt" data-accesstype="direct" data-versionAttrName="Built:" data-redif="moreWorkDaysThan(1, 'MM/DD/YYYY HH:mm:ss')";></td>
+
+<th style="padding:1px 5px 1px 5px;">Page JSON:</th>
+
+<td class="envVersion dontHighlight" id="PageJSON" style="padding:1px 5px 1px 5px;" data-versionUri="prfactboard.json" data-accesstype="direct" data-versionAttrName="text"></td>
+</tr>
+</thead>
+</table>
+
+<br>
+</div>
+
+
+
+
+<script src="md5.min.js"></script>
+<script src="classAccess.js"></script>
+<script src="moment.min.js"></script>
+<script src="transformMethods.js"></script>
+<script src="loadTable.js"></script>
+
+
+</body>
+</html>

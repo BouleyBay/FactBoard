@@ -632,7 +632,7 @@ function afterGetUrl(outData, cellDocObj, errMsg, errColor, howAccessed) { // fu
 
         if (cellValue != "") {  // found the value to display 
           
-            debugMsg("In afterGetUrl, vDOAnchor[0].innerHTML = " + vDOAnchor[0].innerHTML);
+            debugMsg("In afterGetUrl, vDOAnchor.length = " + vDOAnchor.length, " + vDOAnchor[0].innerHTML = " + vDOAnchor[0].innerHTML);
 
             cellDocObj.style.backgroundColor = "green";
             vDOAnchor[0].style.backgroundColor = "green";
@@ -768,14 +768,14 @@ function makeCacheFileName(cellDocObj) {
 
     if (cellDocObj.getAttribute("id") == "lastUpdate" ) {
         // this is a special cell that contains the content of a file that has when the cache was last updated
-        debugMsg("In makeCacheFileName, id = lastUpdate");
         cellUrl = pageNamePrefix + "_last_updated.txt";
+        debugMsg("In makeCacheFileName, id = lastUpdate, cellUrl = " + cellUrl);
     }
 
     if (cellDocObj.getAttribute("id") == "lastBuild" ) {
         // this is a special cell that contains the content of a file that has when the cache was last updated
-        debugMsg("In makeCacheFileName, id = lastBuild");
-        cellUrl = pageNamePrefix + "_last_build.txt";
+        cellUrl = "factboard/" + pageNamePrefix + "_last_build.txt";
+        debugMsg("In makeCacheFileName, id = lastBuild, cellUrl = " + cellUrl);
     }
 
 
@@ -1065,44 +1065,44 @@ var lastUpdateEleIdx = -1;
 var lastBuildEleIdx = -1;
 
 function updateCellValues(valueCellArr) {
+  debugMsg("In updateCellValues, prevLastCacheUpdate = " + prevLastCacheUpdate + ", lastCacheUpdate = " + lastCacheUpdate);
 
-    if (prevLastCacheUpdate != lastCacheUpdate) { // the file on the server containing the date/time of the cell cache update has been updated, so update all cells on the page
+  if (prevLastCacheUpdate != lastCacheUpdate) { // the file on the server containing the date/time of the cell cache update has been updated, so update all cells on the page
 
-        for (var i=0; i < valueCellArr.length; ++i) {  // for each place a value is to be displayed:
-            debugMsg("In updateCellValues, valueCellArr[i].id = " + valueCellArr[i].id);
+      for (var i=0; i < valueCellArr.length; ++i) {  // for each place a value is to be displayed:
+          debugMsg("In updateCellValues, valueCellArr[i].id = " + valueCellArr[i].id);
 
-            var cellDocObj = valueCellArr[i];
-            if (cellDocObj.id == "" || cellDocObj.id == null) { // if the cell did not have an id (which most do not)
-                cellDocObj.id = "envVersion" + i; // create a unique id for the cell, so we can identify it later
-            }
-            debugMsg("In updateCellValues, cellDocObj.id = " + cellDocObj.id);
-            refreshUrl(cellDocObj, "refreshed");  // get the url for the environment which has the value text in it
-            
-            prevLastCacheUpdate = lastCacheUpdate; // set the previous update date to be the same as the last one
+          var cellDocObj = valueCellArr[i];
+          if (cellDocObj.id == "" || cellDocObj.id == null) { // if the cell did not have an id (which most do not)
+              cellDocObj.id = "envVersion" + i; // create a unique id for the cell, so we can identify it later
+          }
+          debugMsg("In updateCellValues, cellDocObj.id = " + cellDocObj.id);
+          refreshUrl(cellDocObj, "refreshed");  // get the url for the environment which has the value text in it
+          
+          prevLastCacheUpdate = lastCacheUpdate; // set the previous update date to be the same as the last one
 
-            if (valueCellArr[i].id == "lastUpdate") { 
-                // store off the index to the "last update" element (cell) as we update this every time
-                lastUpdateEleIdx = i;
-            }
-            if (valueCellArr[i].id == "lastBuild") { 
-                // store off the index to the "last Build" element (cell) as we update this every time
-                lastBuildEleIdx = i;
-            }
-        }
-    } else { // the last cache update date file on the server has the same date as the last time we checked
+          if (valueCellArr[i].id == "lastUpdate") { 
+              // store off the index to the "last update" element (cell) as we update this every time
+              lastUpdateEleIdx = i;
+          }
+          if (valueCellArr[i].id == "lastBuild") { 
+              // store off the index to the "last Build" element (cell) as we update this every time
+              lastBuildEleIdx = i;
+          }
+      }
+  } else { // the last cache update date file on the server has the same date as the last time we checked
 
-        var lastUpdateDispObj = document.getElementById("lastUpdate");  // only update the last_update box
+      var lastUpdateDispObj = document.getElementById("lastUpdate");  // only update the last_update box
 
-        debugMsg("In updateCellValues, calling refreshUrl for element index " + lastUpdateEleIdx);
-        refreshUrl(valueCellArr[lastUpdateEleIdx], "refreshed");  // get the last cache update date and the lastCacheUpdate variable
-    }
+      debugMsg("In updateCellValues, calling refreshUrl for element index " + lastUpdateEleIdx);
+      refreshUrl(valueCellArr[lastUpdateEleIdx], "refreshed");  // get the last cache update date and the lastCacheUpdate variable
+  }
 
 
-    if (prevLastBuild != lastBuild) { // the file on the server containing the date/time of the last Build of the page json has been updated, so Build the page from the json
-      debugMsg("In updateCellValues, calling refreshUrl for element index " + lastBuildEleIdx);
-      refreshUrl(valueCellArr[lastBuildEleIdx], "Built");  // get the last cache update date and the lastBuild variable
-    }
-
+  if (prevLastBuild != lastBuild) { // the file on the server containing the date/time of the last Build of the page json has been updated, so Build the page from the json
+    debugMsg("In updateCellValues, calling refreshUrl for element index " + lastBuildEleIdx);
+    refreshUrl(valueCellArr[lastBuildEleIdx], "Built");  // get the last cache update date and the lastBuild variable
+  }
 }
 
 
