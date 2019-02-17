@@ -1,5 +1,5 @@
     
-var debug = true;
+var debug = false;
 
 function debugMsg(...msg) {
    if (debug) {
@@ -13,43 +13,7 @@ function forceMsg(msg) {
     console.log(msg);
 }
 
-// As of 4.11 we use localstorage instead cookies, so delete all the old cookies - thank you http://stackoverflow.com/questions/595228/how-can-i-delete-all-cookies-with-javascript
-function createCookie(name, value, days) {
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        var expires = "; expires="+date.toGMTString();
-    }
-    else {var expires = "";}
-    document.cookie = name+"="+value+expires+"; path=/";
-}
-
-function readCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-}
-
-function eraseCookie(name) {
-    createCookie(name,"",-1);
-}   
-
-var cookies = document.cookie.split(";");
-for (var i = 0; i < cookies.length; i++) {
-  eraseCookie(cookies[i].split("=")[0]);
-  debugMsg("Erased cookie " + cookies[i].split("=")[0]);
-}  
-
-
 var configDisplay = true;  // true if the configuration section is displayed for configuring what environments are shown, false if the minus icon
-
-// TODO: put the above in a getter/setter (currently it's a global variable).  See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters
-
 
 function toggleConfigDisplay(element) {
     configDisplay = !configDisplay;  // toggle the plus/minus display boolean
@@ -135,9 +99,6 @@ function loadEnvMenu(envEle, envIdx) { // Add the popup menus to a fact or headi
   envMenuDiv.setAttribute('onmouseout', "mclosetime()");
 
   var envAnchorArr = ["", "", "", "", "", "", "", "", "", "", "", "", ""] // 13 elements - keep in synch with the max number of menu items
-  var envMenuItem;
-  var envMenuDisp;
-  var envMenuUri;
   var delimPos;
   var menuText;
   var prevMenuItemIdx = -1;
@@ -145,59 +106,75 @@ function loadEnvMenu(envEle, envIdx) { // Add the popup menus to a fact or headi
   // find menu items for the cell and add them to the list
   for (var i=13; i>=1; i--) {  // have to go in reverse order as there is no "insert after" in js [update - I believe there is] so have to insert before the previous menu line added
       // if you increase the max number of menu items (above), to be safe, add extra "" values to envAnchorArr.
-  
-      envMenuItem = envEle.getAttribute("data-menuitem" + i); // get the next item to add to the menu dropdown
+
+    let envMenuText = envEle.getAttribute("data-menutext" + i); // get the next item to add to the menu dropdown
+    let envMenuUrl = envEle.getAttribute("data-menuurl" + i); // get the next item to add to the menu dropdown
+
+    console.log("envMenuText A =", envMenuText);
+    console.log("envMenuUrl A =", envMenuUrl);
+
+
+    if (!envMenuText) {
+      let envMenuItem = envEle.getAttribute("data-menuitem" + i); // old way of getting the next item to add to the menu dropdown
       if (envMenuItem) {
-          envAnchorArr[i] = document.createElement('a'); // create and anchor element for the dropdown
-          delimPos = envMenuItem.indexOf(":") // find the first colon, which delimits what is displayed in the menu item and what the url is if clicked
-          if (delimPos != -1) { // found the colon (otherwise it's a badly constructed menu item so ignore
+        delimPos = envMenuItem.indexOf(":") // find the first colon, which delimits what is displayed in the menu item and what the url is if clicked
+        if (delimPos != -1) { // found the colon (otherwise it's a badly constructed menu item so ignore
 
-              envMenuDisp = envMenuItem.substring(0, delimPos);  // the menu item display is the part before the colon
-              envMenuUri = envMenuItem.substring(delimPos+1, envMenuItem.length);  // the uri when the menu item is clicked is the part after the colon 
-              envAnchorArr[i].setAttribute("href", envMenuUri);  // set the action for clicking the menu item
-
-             envAnchorArr[i].textContent = envMenuDisp;
-             envAnchorArr[i].innerHTML = envAnchorArr[i].innerHTML.replace(/\n|\\n|<br>/g, "<br>");
-
-
-              if (prevMenuItemIdx == -1) { // this is the first menu item to be added (actually the last on the list), so append as child of the div
-                  envMenuDiv.appendChild(envAnchorArr[i]);
-              } else { // subsequent menu items: insert before the previous menu item
-                  envMenuDiv.insertBefore(envAnchorArr[i], envAnchorArr[prevMenuItemIdx]);                
-              }
-              prevMenuItemIdx = i;
-          }
+          envMenuText = envMenuItem.substring(0, delimPos);  // the menu item display is the part before the colon
+          envMenuUrl = envMenuItem.substring(delimPos+1, envMenuItem.length);  // the uri when the menu item is clicked is the part after the colon 
+        }
       }
     }
 
 
-    // The below will contain the displayed value, so need to replace the href with putting in the side window
+    console.log("envMenuText B=", envMenuText);
+    console.log("envMenuUrl B=", envMenuUrl);
 
-    var displayedValueAnchor = document.createElement('a');  // Create an anchor element to do inside the cell
-    displayedValueAnchor.class = 'displayedvalueanchor';
-    displayedValueAnchor.id = 'displayedvalueanchor' + envIdx;
-    var envMenuDisp = document.createTextNode(envEle.innerHTML);  // crappy: move the row header text to the anchor
-    envEle.innerHTML = "";  // remove the header text after moving it to the anchor (there are better ways to do this)
-    displayedValueAnchor.appendChild(envMenuDisp);
+    if (envMenuText) {
+        envAnchorArr[i] = document.createElement('a'); // create and anchor element for the dropdown
+        envAnchorArr[i].textContent = envMenuText;
+        envAnchorArr[i].innerHTML = envAnchorArr[i].innerHTML.replace(/\n|\\n|<br>/g, "<br>");
+ //   }
 
+      if (envMenuUrl) envAnchorArr[i].setAttribute("href", envMenuUrl);  // set the action for clicking the menu item
 
-    var cellUrl = envEle.getAttribute("data-versionuri"); // where the url associated with the clicked cell is displayed
-
-    if (cellUrl != "" && cellUrl != null) {  // we are allowed to select the cell containing the url
-        debugMsg("In loadEnvMenu, cellUrl not empty, = " + cellUrl);
-        displayedValueAnchor.onclick = function() {refreshUrl(envEle, "clickedLink")}; // set the function to perform if (later) the url is clicked
-        //displayedValueAnchor.title = envEle.getAttribute("data-versionuri"); // does not work - bug
+      if (prevMenuItemIdx == -1) { // this is the first menu item to be added (actually the last on the list), so append as child of the div
+         envMenuDiv.appendChild(envAnchorArr[i]);
+      } else { // subsequent menu items: insert before the previous menu item
+         envMenuDiv.insertBefore(envAnchorArr[i], envAnchorArr[prevMenuItemIdx]);                
+      }
+      prevMenuItemIdx = i;
     }
+  }
 
-    if (prevMenuItemIdx != -1) { // there is at least one menu item
-        envEle.appendChild(envMenuDiv);
-        //displayedValueAnchor.href = envMenuUri;
-        displayedValueAnchor.onmouseover = function(){mopen("envdropdown" + envIdx, envEle)};
-        displayedValueAnchor.onmouseout = function(){mclosetime(envEle)};
-        envEle.insertBefore(displayedValueAnchor, envMenuDiv);  // insert the anchor in the cell that will show the value
-    } else { // no menu items
-        envEle.appendChild(displayedValueAnchor);
-    }    
+
+  // The below will contain the displayed value, so need to replace the href with putting in the side window
+
+  var displayedValueAnchor = document.createElement('a');  // Create an anchor element to do inside the cell
+  displayedValueAnchor.class = 'displayedvalueanchor';
+  displayedValueAnchor.id = 'displayedvalueanchor' + envIdx;
+  var envMenuDisp = document.createTextNode(envEle.innerHTML);  // crappy: move the row header text to the anchor
+  envEle.innerHTML = "";  // remove the header text after moving it to the anchor (there are better ways to do this)
+  displayedValueAnchor.appendChild(envMenuDisp);
+
+
+  var cellUrl = envEle.getAttribute("data-versionuri"); // where the url associated with the clicked cell is displayed
+
+  if (cellUrl != "" && cellUrl != null) {  // we are allowed to select the cell containing the url
+      debugMsg("In loadEnvMenu, cellUrl not empty, = " + cellUrl);
+      displayedValueAnchor.onclick = function() {refreshUrl(envEle, "clickedLink")}; // set the function to perform if (later) the url is clicked
+      //displayedValueAnchor.title = envEle.getAttribute("data-versionuri"); // does not work - bug
+  }
+
+  if (prevMenuItemIdx != -1) { // there is at least one menu item
+      envEle.appendChild(envMenuDiv);
+      //displayedValueAnchor.href = envMenuUri;
+      displayedValueAnchor.onmouseover = function(){mopen("envdropdown" + envIdx, envEle)};
+      displayedValueAnchor.onmouseout = function(){mclosetime(envEle)};
+      envEle.insertBefore(displayedValueAnchor, envMenuDiv);  // insert the anchor in the cell that will show the value
+  } else { // no menu items
+      envEle.appendChild(displayedValueAnchor);
+  }    
 }
 
 
@@ -531,7 +508,8 @@ function createTablesFromJson(outData, factsObj, errMsg, errColor, howAccessed) 
                                     if (typeof factDisplay.tables[i].rows[j].cells[k].popupMenus[l].text != "undefined" && typeof factDisplay.tables[i].rows[j].cells[k].popupMenus[l].url != "undefined") {  
                                         debugMsg("In createTablesFromJson, factDisplay.tables[i].rows[j].cells[k].popupMenus[l].text = " + factDisplay.tables[i].rows[j].cells[k].popupMenus[l].text + ", l = " + l);
 
-                                        factsCellObj.setAttribute("data-menuitem" + (l+1), factDisplay.tables[i].rows[j].cells[k].popupMenus[l].text + ":" + factDisplay.tables[i].rows[j].cells[k].popupMenus[l].url);
+                                        factsCellObj.setAttribute("data-menutext" + (l+1), factDisplay.tables[i].rows[j].cells[k].popupMenus[l].text);
+                                        factsCellObj.setAttribute("data-menuurl" + (l+1), factDisplay.tables[i].rows[j].cells[k].popupMenus[l].url);
                                     }
                                 };
                             }; // end of adding popup menu attributes
@@ -878,7 +856,6 @@ function getResponseUrl(resourceToGet, cellDocObj, howAccessed, beforeFunction, 
         xmlHttp.setRequestHeader('If-None-Match', 'R'+Math.random());
         xmlHttp.responseType = 'text';
         //xmlHttp.setRequestHeader('Content-Type', 'text/plain');
-        //xmlHttp.responseType = "text";
         //xmlHttp.overrideMimeType("text/plain; charset=x-user-defined");
         //xmlHttp.withCredentials = true;
 
